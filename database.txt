@@ -1,0 +1,39 @@
+-- Database: ClothingStoreDB
+
+CREATE DATABASE ClothingStoreDB;
+USE ClothingStoreDB;
+
+-- Customers Table
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY IDENTITY(1,1),
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(100),
+    Phone NVARCHAR(15)
+);
+
+-- Items Table
+CREATE TABLE Items (
+    ItemID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Category NVARCHAR(50),
+    Price DECIMAL(10,2) NOT NULL,
+    Stock INT NOT NULL
+);
+
+-- Orders Table
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1,1),
+    CustomerID INT NOT NULL FOREIGN KEY REFERENCES Customers(CustomerID),
+    OrderDate DATETIME NOT NULL,
+    TotalAmount DECIMAL(10,2) NOT NULL
+);
+
+-- OrderDetails Table
+CREATE TABLE OrderDetails (
+    OrderDetailID INT PRIMARY KEY IDENTITY(1,1),
+    OrderID INT NOT NULL FOREIGN KEY REFERENCES Orders(OrderID),
+    ItemID INT NOT NULL FOREIGN KEY REFERENCES Items(ItemID),
+    Quantity INT NOT NULL,
+    Subtotal DECIMAL(10,2) NOT NULL
+);

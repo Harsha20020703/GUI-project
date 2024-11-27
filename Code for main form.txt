@@ -1,0 +1,45 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows;
+
+namespace ClothingStoreManagement
+{
+    public partial class MainWindow : Window
+    {
+        private string connectionString = "Data Source=YOUR_SERVER;Initial Catalog=ClothingStoreDB;Integrated Security=True";
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            LoadDashboard();
+        }
+
+        private void LoadDashboard()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Total Sales
+                    string querySales = "SELECT SUM(TotalAmount) FROM Orders";
+                    SqlCommand cmdSales = new SqlCommand(querySales, conn);
+                    var totalSales = cmdSales.ExecuteScalar();
+                    txtTotalSales.Text = totalSales != DBNull.Value ? $"${totalSales}" : "$0";
+
+                    // Inventory Status
+                    string queryInventory = "SELECT COUNT(*) FROM Items WHERE Stock > 0";
+                    SqlCommand cmdInventory = new SqlCommand(queryInventory, conn);
+                    var inventoryStatus = cmdInventory.ExecuteScalar();
+                    txtInventoryStatus.Text = $"{inventoryStatus} items in stock";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading dashboard: {ex.Message}");
+            }
+        }
+    }
+}
